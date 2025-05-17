@@ -1,0 +1,79 @@
+/*  
+  Filename: dndCharacterRoller.js  
+  Purpose: Generates a D&D character's ability scores using a 3d6 roll.  
+  The user selects a race, which modifies specific stats.
+*/
+
+function roll3d6() {
+  return Math.floor(Math.random() * 6 + 1) +
+         Math.floor(Math.random() * 6 + 1) +
+         Math.floor(Math.random() * 6 + 1);
+}
+
+function getRaceBonus(race) {
+  let bonuses = {
+    elf: { Dexterity: 2 },
+    dwarf: { Constitution: 2 },
+    human: { Strength: 1, Dexterity: 1, Constitution: 1, Intelligence: 1, Wisdom: 1, Charisma: 1 }
+  };
+
+  return bonuses[race] || {};
+}
+
+function generateCharacter(race) {
+  let stats = {
+    Strength: roll3d6(),
+    Dexterity: roll3d6(),
+    Constitution: roll3d6(),
+    Intelligence: roll3d6(),
+    Wisdom: roll3d6(),
+    Charisma: roll3d6()
+  };
+
+  let bonus = getRaceBonus(race);
+  
+  // Apply race bonuses
+  for (let stat in bonus) {
+    stats[stat] += bonus[stat];
+  }
+
+  return stats;
+}
+
+function displayCharacterStats(stats) {
+  document.write("<h3>Character Stats:</h3>");
+  document.write("<ul>");
+  for (let stat in stats) {
+    document.write(`<li>${stat}: ${stats[stat]}</li>`);
+  }
+  document.write("</ul>");
+}
+
+function startCharacterCreation() {
+  let race;
+  while (true) {
+    race = prompt("Choose a race: Elf, Dwarf, Human").toLowerCase();
+
+    switch (race) {
+      case "elf":
+      case "dwarf":
+      case "human":
+        let characterStats = generateCharacter(race);
+        document.write(`<h3>Race selected: ${race.charAt(0).toUpperCase() + race.slice(1)}</h3>`);
+        displayCharacterStats(characterStats);
+        break;
+      default:
+        alert("Invalid race selected. Please choose Elf, Dwarf, or Human.");
+        continue; // Reprompt on invalid input
+    }
+
+    if (!confirm("Do you want to roll another character?")) {
+      break;
+    }
+  }
+  
+  document.write("<p>Goodbye, adventurer!</p>");
+}
+
+// Start the program
+startCharacterCreation();
